@@ -1,1 +1,620 @@
-<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Look-Ahead Dashboard</title><link rel="stylesheet" href="/styles.css"></head><body><header class="top"><img src="/fec-official.svg"></header><main class="wrap"><div id="login" class="card login"><h2>Management Dashboard</h2><p class="note">Authorized project personnel only.</p><div class="field"><label>Password</label><input id="pw" type="password"></div><button class="btn full" id="go">Sign In</button><p id="err" class="bad"></p></div><div id="app" class="hidden"><div class="toolbar"><div class="hero"><div class="muted">PRIVATE MANAGEMENT VIEW</div><h1>Equipment Look-Ahead</h1></div><button class="btn secondary" id="test">Preview Test Email</button></div><div class="stats"><div class="card stat"><span class="muted">Trade Partners</span><strong id="total"></strong></div><div class="card stat"><span class="muted">Complete</span><strong id="complete"></strong></div><div class="card stat"><span class="muted">Outstanding</span><strong id="outstanding"></strong></div><div class="card stat"><span class="muted">Equipment Qty</span><strong id="qty"></strong></div></div><div class="card table"><table><thead><tr><th>Trade Partner</th><th>Status</th><th>Submitted</th><th>Reminders</th><th>Forecast</th></tr></thead><tbody id="rows"></tbody></table></div><div id="preview" class="card hidden"></div></div></main><script>const $=id=>document.getElementById(id);let pw='';async function load(){const r=await fetch('/api/dashboard',{headers:{authorization:'Bearer '+pw}});if(!r.ok){$('err').textContent='Access denied.';return}const d=await r.json();$('login').classList.add('hidden');$('app').classList.remove('hidden');$('total').textContent=d.partners.length;const c=d.partners.filter(x=>x.status==='complete');$('complete').textContent=c.length;$('outstanding').textContent=d.partners.length-c.length;$('qty').textContent=c.flatMap(x=>x.submission?.items||[]).reduce((a,x)=>a+Number(x.quantity||0),0);$('rows').innerHTML=d.partners.map(x=>`<tr><td><strong>${x.company}</strong></td><td class="${x.status==='complete'?'ok':'bad'}">${x.status==='complete'?'✓ Complete':'● Outstanding'}</td><td>${x.submittedAt?new Date(x.submittedAt).toLocaleString():'—'}</td><td>${x.reminders||0}</td><td>${x.submission?.noEquipment?'No equipment':x.submission?.items?.map(i=>`${i.quantity} × ${i.type}`).join('<br>')||'—'}</td></tr>`).join('')};$('go').onclick=()=>{pw=$('pw').value;load()};$('test').onclick=async()=>{const r=await fetch('/api/admin/test-email',{method:'POST',headers:{authorization:'Bearer '+pw}});const j=await r.json();$('preview').classList.remove('hidden');$('preview').innerHTML=`<h3>Trade Partner Email Preview</h3><p><strong>To:</strong> ${j.to}</p><p><strong>Subject:</strong> ${j.subject}</p><p>Your equipment look-ahead is required. Please identify anticipated rental equipment needs for the upcoming six-week period. Even if no additional equipment is required, a response is required.</p><p><a class="btn" href="${j.link}">COMPLETE EQUIPMENT LOOK-AHEAD</a></p><p class="note">${j.note}</p>`};</script></body></html>
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Equipment Look-Ahead Management</title>
+  <link rel="stylesheet" href="/styles.css">
+
+  <style>
+    .dashboard-wrap {
+      max-width: 1050px;
+      width: calc(100% - 40px);
+      margin: 0 auto;
+      padding: 28px 0 60px;
+    }
+
+    .dashboard-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: end;
+      gap: 20px;
+      margin-bottom: 20px;
+    }
+
+    .dashboard-header h1 {
+      margin: 5px 0 0;
+    }
+
+    .eyebrow {
+      color: #aeb9c7;
+      font-size: 13px;
+      text-transform: uppercase;
+    }
+
+    .test-btn {
+      width: auto !important;
+      padding: 12px 18px !important;
+      white-space: nowrap;
+    }
+
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(4,1fr);
+      gap: 12px;
+      margin-bottom: 22px;
+    }
+
+    .stat {
+      background: #111821;
+      border: 1px solid #2b3b4e;
+      border-radius: 14px;
+      padding: 18px;
+    }
+
+    .stat-label {
+      color: #aeb9c7;
+      margin-bottom: 7px;
+    }
+
+    .stat-value {
+      font-size: 27px;
+      font-weight: 800;
+    }
+
+    .dashboard-card {
+      background: #111821;
+      border: 1px solid #2b3b4e;
+      border-radius: 14px;
+      padding: 18px;
+      overflow-x: auto;
+    }
+
+    .dashboard-table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    .dashboard-table th,
+    .dashboard-table td {
+      text-align: left;
+      padding: 13px 10px;
+      border-bottom: 1px solid #2b3b4e;
+      vertical-align: top;
+    }
+
+    .partner-btn {
+      padding: 0 !important;
+      margin: 0 !important;
+      width: auto !important;
+      background: transparent !important;
+      border: 0 !important;
+      color: #fff !important;
+      font-weight: 700;
+      text-align: left;
+      cursor: pointer;
+    }
+
+    .complete {
+      color: #53d18a;
+      font-weight: 700;
+    }
+
+    .outstanding {
+      color: #ff6b6b;
+      font-weight: 700;
+    }
+
+    .message {
+      margin-bottom: 18px;
+      padding: 12px 14px;
+      border: 1px solid #2b3b4e;
+      border-radius: 10px;
+      background: #111821;
+    }
+
+    .message.success {
+      border-color: #3b815b;
+    }
+
+    .message.error {
+      border-color: #a44343;
+    }
+
+    .hidden {
+      display: none !important;
+    }
+
+    .detail-card {
+      margin-top: 18px;
+      background: #111821;
+      border: 1px solid #2b3b4e;
+      border-radius: 14px;
+      padding: 20px;
+    }
+
+    .detail-head {
+      display: flex;
+      justify-content: space-between;
+      gap: 15px;
+      align-items: center;
+      margin-bottom: 15px;
+    }
+
+    .detail-head h2 {
+      margin: 0;
+    }
+
+    .close-btn {
+      width: auto !important;
+      padding: 8px 12px !important;
+    }
+
+    .detail-meta {
+      color: #aeb9c7;
+      margin-bottom: 15px;
+      line-height: 1.6;
+    }
+
+    .detail-table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    .detail-table th,
+    .detail-table td {
+      padding: 11px 8px;
+      border-bottom: 1px solid #2b3b4e;
+      text-align: left;
+      vertical-align: top;
+    }
+
+    @media (max-width: 800px) {
+      .dashboard-wrap {
+        width: calc(100% - 24px);
+      }
+
+      .dashboard-header {
+        align-items: flex-start;
+        flex-direction: column;
+      }
+
+      .stats {
+        grid-template-columns: 1fr 1fr;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+<header class="top">
+  <img src="/fec-logo.png" alt="FEC First Equipment Company">
+</header>
+
+<main class="dashboard-wrap">
+
+  <div class="dashboard-header">
+    <div>
+      <div class="eyebrow">Private Management View</div>
+      <h1>Equipment Look-Ahead</h1>
+    </div>
+
+    <button id="testEmail" class="test-btn">
+      Preview Test Email
+    </button>
+  </div>
+
+  <div id="message" class="message hidden"></div>
+
+  <section class="stats">
+    <div class="stat">
+      <div class="stat-label">Trade Partners</div>
+      <div id="tradePartners" class="stat-value">—</div>
+    </div>
+
+    <div class="stat">
+      <div class="stat-label">Complete</div>
+      <div id="complete" class="stat-value">—</div>
+    </div>
+
+    <div class="stat">
+      <div class="stat-label">Outstanding</div>
+      <div id="outstanding" class="stat-value">—</div>
+    </div>
+
+    <div class="stat">
+      <div class="stat-label">Equipment Qty</div>
+      <div id="equipmentQty" class="stat-value">—</div>
+    </div>
+  </section>
+
+  <section class="dashboard-card">
+    <table class="dashboard-table">
+      <thead>
+        <tr>
+          <th>Trade Partner</th>
+          <th>Status</th>
+          <th>Submitted</th>
+          <th>Reminders</th>
+          <th>Forecast</th>
+        </tr>
+      </thead>
+
+      <tbody id="rows">
+        <tr>
+          <td colspan="5">Loading dashboard...</td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+
+  <section id="detail" class="detail-card hidden">
+    <div class="detail-head">
+      <h2 id="detailCompany"></h2>
+      <button id="closeDetail" class="close-btn">Close</button>
+    </div>
+
+    <div id="detailMeta" class="detail-meta"></div>
+    <div id="detailContent"></div>
+  </section>
+
+</main>
+
+<script>
+const $ = id => document.getElementById(id);
+
+let adminPassword = '';
+let dashboardData = null;
+
+function escapeHtml(value) {
+  return String(value ?? '')
+    .replaceAll('&', '&amp;')
+    .replaceAll('<', '&lt;')
+    .replaceAll('>', '&gt;')
+    .replaceAll('"', '&quot;')
+    .replaceAll("'", '&#039;');
+}
+
+function showMessage(text, type = '') {
+  const box = $('message');
+
+  box.textContent = text;
+  box.className = 'message';
+
+  if (type) {
+    box.classList.add(type);
+  }
+
+  box.classList.remove('hidden');
+}
+
+function clearMessage() {
+  $('message').classList.add('hidden');
+}
+
+function formatDateTime(value) {
+  if (!value) return '—';
+
+  const date = new Date(value);
+
+  if (Number.isNaN(date.getTime())) {
+    return value;
+  }
+
+  return date.toLocaleString('en-US');
+}
+
+function getForecast(partner) {
+  if (
+    partner.status !== 'complete' ||
+    !partner.submission
+  ) {
+    return '—';
+  }
+
+  if (partner.submission.noEquipment) {
+    return 'No equipment required';
+  }
+
+  const items = partner.submission.items || [];
+
+  if (!items.length) {
+    return 'No equipment required';
+  }
+
+  return items
+    .map(item =>
+      `${Number(item.quantity) || 0} × ${escapeHtml(item.type)}`
+    )
+    .join('<br>');
+}
+
+function totalEquipment(partners) {
+  return partners.reduce((total, partner) => {
+    if (
+      partner.status !== 'complete' ||
+      !partner.submission ||
+      partner.submission.noEquipment
+    ) {
+      return total;
+    }
+
+    return total + (partner.submission.items || [])
+      .reduce(
+        (sum, item) =>
+          sum + (Number(item.quantity) || 0),
+        0
+      );
+  }, 0);
+}
+
+function renderDashboard(data) {
+  dashboardData = data;
+
+  const partners = data.partners || [];
+
+  const completed = partners.filter(
+    partner => partner.status === 'complete'
+  ).length;
+
+  const outstanding = partners.length - completed;
+
+  $('tradePartners').textContent = partners.length;
+  $('complete').textContent = completed;
+  $('outstanding').textContent = outstanding;
+  $('equipmentQty').textContent =
+    totalEquipment(partners);
+
+  $('rows').innerHTML = partners.map(partner => `
+    <tr>
+      <td>
+        <button
+          type="button"
+          class="partner-btn"
+          data-partner="${escapeHtml(partner.id)}"
+        >
+          ${escapeHtml(partner.company)}
+        </button>
+      </td>
+
+      <td class="${
+        partner.status === 'complete'
+          ? 'complete'
+          : 'outstanding'
+      }">
+        ${
+          partner.status === 'complete'
+            ? '✓ Complete'
+            : '• Outstanding'
+        }
+      </td>
+
+      <td>
+        ${formatDateTime(partner.submittedAt)}
+      </td>
+
+      <td>
+        ${Number(partner.reminders) || 0}
+      </td>
+
+      <td>
+        ${getForecast(partner)}
+      </td>
+    </tr>
+  `).join('');
+
+  document
+    .querySelectorAll('.partner-btn')
+    .forEach(button => {
+      button.addEventListener('click', () => {
+        showPartner(button.dataset.partner);
+      });
+    });
+}
+
+function showPartner(partnerId) {
+  const partner = dashboardData?.partners?.find(
+    item => item.id === partnerId
+  );
+
+  if (!partner) return;
+
+  $('detailCompany').textContent = partner.company;
+
+  if (
+    partner.status !== 'complete' ||
+    !partner.submission
+  ) {
+    $('detailMeta').innerHTML =
+      `Status: <strong>Outstanding</strong><br>` +
+      `Reminders sent: ${Number(partner.reminders) || 0}`;
+
+    $('detailContent').innerHTML =
+      '<p>No look-ahead has been submitted for this cycle.</p>';
+
+    $('detail').classList.remove('hidden');
+    return;
+  }
+
+  const submission = partner.submission;
+
+  $('detailMeta').innerHTML =
+    `Submitted by: <strong>${escapeHtml(
+      submission.submittedBy
+    )}</strong><br>` +
+    `Email: ${escapeHtml(submission.email)}<br>` +
+    `Submitted: ${formatDateTime(partner.submittedAt)}`;
+
+  if (submission.noEquipment) {
+    $('detailContent').innerHTML =
+      '<p><strong>No equipment required.</strong></p>';
+
+    $('detail').classList.remove('hidden');
+    return;
+  }
+
+  const items = submission.items || [];
+
+  $('detailContent').innerHTML = `
+    <div style="overflow-x:auto">
+      <table class="detail-table">
+        <thead>
+          <tr>
+            <th>Equipment</th>
+            <th>Qty</th>
+            <th>Date Needed</th>
+            <th>Duration</th>
+            <th>Area / Location</th>
+            <th>Notes</th>
+          </tr>
+        </thead>
+
+        <tbody>
+          ${items.map(item => `
+            <tr>
+              <td>${escapeHtml(item.type)}</td>
+              <td>${Number(item.quantity) || 0}</td>
+              <td>${escapeHtml(item.dateNeeded)}</td>
+              <td>${escapeHtml(item.duration)}</td>
+              <td>${escapeHtml(
+                item.location || item.area || '—'
+              )}</td>
+              <td>${escapeHtml(item.notes || '—')}</td>
+            </tr>
+          `).join('')}
+        </tbody>
+      </table>
+    </div>
+  `;
+
+  $('detail').classList.remove('hidden');
+}
+
+async function loadDashboard() {
+  clearMessage();
+
+  try {
+    const response = await fetch('/api/dashboard', {
+      headers: {
+        Authorization: 'Bearer ' + adminPassword
+      }
+    });
+
+    if (response.status === 401) {
+      showMessage(
+        'Incorrect management password.',
+        'error'
+      );
+      return false;
+    }
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      showMessage(
+        data.error || 'Unable to load dashboard.',
+        'error'
+      );
+      return false;
+    }
+
+    renderDashboard(data);
+    return true;
+
+  } catch (error) {
+    showMessage(
+      'Unable to connect to the dashboard.',
+      'error'
+    );
+    return false;
+  }
+}
+
+async function sendTestEmail() {
+  clearMessage();
+
+  const button = $('testEmail');
+  const originalText = button.textContent;
+
+  button.disabled = true;
+  button.textContent = 'Sending Test Email...';
+
+  try {
+    const response = await fetch(
+      '/api/admin/test-email',
+      {
+        method: 'POST',
+        headers: {
+          Authorization:
+            'Bearer ' + adminPassword
+        }
+      }
+    );
+
+    const result = await response.json();
+
+    if (!response.ok || !result.ok) {
+      showMessage(
+        result.error ||
+        'Unable to send the test email.',
+        'error'
+      );
+      return;
+    }
+
+    if (result.sent) {
+      showMessage(
+        'Test email sent successfully. Check aciraky@fecrent.com.',
+        'success'
+      );
+    } else {
+      showMessage(
+        result.reason ||
+        'The test email was prepared but not sent.',
+        'error'
+      );
+    }
+
+  } catch (error) {
+    showMessage(
+      'Unable to contact the email service.',
+      'error'
+    );
+  } finally {
+    button.disabled = false;
+    button.textContent = originalText;
+  }
+}
+
+$('testEmail').addEventListener(
+  'click',
+  sendTestEmail
+);
+
+$('closeDetail').addEventListener(
+  'click',
+  () => $('detail').classList.add('hidden')
+);
+
+async function start() {
+  adminPassword = prompt(
+    'Management password:'
+  ) || '';
+
+  if (!adminPassword) {
+    showMessage(
+      'Management password is required.',
+      'error'
+    );
+    return;
+  }
+
+  await loadDashboard();
+}
+
+start();
+</script>
+
+</body>
+</html>
