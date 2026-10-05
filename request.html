@@ -386,9 +386,9 @@ async function init() {
     requestData = await response.json();
 
     document.getElementById('companyName').textContent =
-      requestData.partner.company;
+   requestData.company
 
-    const cycle = requestData.cycle;
+    const cycle = requestData;
 
     document.getElementById('cycleText').textContent =
       `${cycle.name} • ${formatDate(cycle.start)} through ${formatDate(cycle.end)}`;
