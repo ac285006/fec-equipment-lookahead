@@ -638,7 +638,61 @@ async function togglePartner(id) {
   );
 }
 
-async function generateNewPartnerLink(id) {async function sendPartnerTestEmail(id, button) {
+async function generateNewPartnerLink(id) {
+  const partner = dashboardData?.partners?.find(
+    p => p.id === id
+  );
+
+  if (!partner) {
+    showMessage('Trade partner not found.', 'error');
+    return;
+  }
+
+  if (!confirm(
+    `Generate a new request link for ${partner.company}?\n\n` +
+    `Their previous link will stop working.`
+  )) {
+    return;
+  }
+
+  try {
+    const response = await fetch(
+      `/api/admin/partners/${encodeURIComponent(id)}/new-token`,
+      {
+        method: 'POST',
+        headers: {
+          Authorization: 'Bearer ' + adminPassword
+        }
+      }
+    );
+
+    const result = await response.json();
+
+    if (!response.ok || !result.ok) {
+      showMessage(
+        result.error || 'Unable to generate new link.',
+        'error'
+      );
+      return;
+    }
+
+    await loadDashboard();
+
+    showMessage(
+      `A new secure request link was generated for ${partner.company}.`,
+      'success'
+    );
+
+  } catch (error) {
+    showMessage(
+      `Unable to generate a new request link for ${partner.company}.`,
+      'error'
+    );
+  }
+}
+
+
+async function sendPartnerTestEmail(id, button) {
   const partner = dashboardData?.partners?.find(
     p => p.id === id
   );
@@ -692,38 +746,6 @@ async function generateNewPartnerLink(id) {async function sendPartnerTestEmail(i
     button.disabled = false;
     button.textContent = originalText;
   }
-}
-  const partner = dashboardData?.partners?.find(p => p.id === id);
-  if (!partner) return;
-
-  if (!confirm(
-    `Generate a new request link for ${partner.company}?\n\n` +
-    `Their previous link will stop working.`
-  )) return;
-
-  const response = await fetch(
-    `/api/admin/partners/${encodeURIComponent(id)}/new-token`,
-    {
-      method:'POST',
-      headers:{
-        Authorization:'Bearer ' + adminPassword
-      }
-    }
-  );
-
-  const result = await response.json();
-
-  if (!response.ok || !result.ok) {
-    showMessage(result.error || 'Unable to generate new link.','error');
-    return;
-  }
-
-  await loadDashboard();
-
-  showMessage(
-    `A new secure request link was generated for ${partner.company}.`,
-    'success'
-  );
 }
 
 async function loadDashboard() {
