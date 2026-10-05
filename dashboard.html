@@ -14,174 +14,146 @@
       padding: 28px 0 60px;
     }
 
-    .dashboard-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: end;
-      gap: 20px;
-      margin-bottom: 20px;
+    .dashboard-header, .section-header {
+      display:flex;
+      justify-content:space-between;
+      align-items:end;
+      gap:20px;
+      margin-bottom:20px;
     }
 
-    .dashboard-header h1 {
-      margin: 5px 0 0;
+    .dashboard-header h1, .section-header h2 {
+      margin:5px 0 0;
     }
 
     .eyebrow {
-      color: #aeb9c7;
-      font-size: 13px;
-      text-transform: uppercase;
+      color:#aeb9c7;
+      font-size:13px;
+      text-transform:uppercase;
     }
 
-    .test-btn {
-      width: auto !important;
-      padding: 12px 18px !important;
-      white-space: nowrap;
+    .test-btn, .small-btn {
+      width:auto !important;
+      white-space:nowrap;
     }
+
+    .test-btn { padding:12px 18px !important; }
+    .small-btn { padding:7px 10px !important; margin:2px; }
 
     .stats {
-      display: grid;
-      grid-template-columns: repeat(4,1fr);
-      gap: 12px;
-      margin-bottom: 22px;
+      display:grid;
+      grid-template-columns:repeat(4,1fr);
+      gap:12px;
+      margin-bottom:22px;
     }
 
-    .stat {
-      background: #111821;
-      border: 1px solid #2b3b4e;
-      border-radius: 14px;
-      padding: 18px;
+    .stat, .dashboard-card, .detail-card {
+      background:#111821;
+      border:1px solid #2b3b4e;
+      border-radius:14px;
     }
+
+    .stat { padding:18px; }
 
     .stat-label {
-      color: #aeb9c7;
-      margin-bottom: 7px;
+      color:#aeb9c7;
+      margin-bottom:7px;
     }
 
     .stat-value {
-      font-size: 27px;
-      font-weight: 800;
+      font-size:27px;
+      font-weight:800;
     }
 
-    .dashboard-card {
-      background: #111821;
-      border: 1px solid #2b3b4e;
-      border-radius: 14px;
-      padding: 18px;
-      overflow-x: auto;
+    .dashboard-card, .detail-card {
+      padding:18px;
+      overflow-x:auto;
     }
 
-    .dashboard-table {
-      width: 100%;
-      border-collapse: collapse;
+    .management-card { margin-top:22px; }
+    .detail-card { margin-top:18px; }
+
+    table {
+      width:100%;
+      border-collapse:collapse;
     }
 
-    .dashboard-table th,
-    .dashboard-table td {
-      text-align: left;
-      padding: 13px 10px;
-      border-bottom: 1px solid #2b3b4e;
-      vertical-align: top;
+    th, td {
+      text-align:left;
+      padding:13px 10px;
+      border-bottom:1px solid #2b3b4e;
+      vertical-align:top;
     }
 
     .partner-btn {
-      padding: 0 !important;
-      margin: 0 !important;
-      width: auto !important;
-      background: transparent !important;
-      border: 0 !important;
-      color: #fff !important;
-      font-weight: 700;
-      text-align: left;
-      cursor: pointer;
+      padding:0 !important;
+      margin:0 !important;
+      width:auto !important;
+      background:transparent !important;
+      border:0 !important;
+      color:#fff !important;
+      font-weight:700;
+      text-align:left;
+      cursor:pointer;
     }
 
-    .complete {
-      color: #53d18a;
-      font-weight: 700;
-    }
-
-    .outstanding {
-      color: #ff6b6b;
-      font-weight: 700;
-    }
+    .complete { color:#53d18a; font-weight:700; }
+    .outstanding { color:#ff6b6b; font-weight:700; }
 
     .message {
-      margin-bottom: 18px;
-      padding: 12px 14px;
-      border: 1px solid #2b3b4e;
-      border-radius: 10px;
-      background: #111821;
+      margin-bottom:18px;
+      padding:12px 14px;
+      border:1px solid #2b3b4e;
+      border-radius:10px;
+      background:#111821;
     }
 
-    .message.success {
-      border-color: #3b815b;
-    }
-
-    .message.error {
-      border-color: #a44343;
-    }
-
-    .hidden {
-      display: none !important;
-    }
-
-    .detail-card {
-      margin-top: 18px;
-      background: #111821;
-      border: 1px solid #2b3b4e;
-      border-radius: 14px;
-      padding: 20px;
-    }
+    .message.success { border-color:#3b815b; }
+    .message.error { border-color:#a44343; }
+    .hidden { display:none !important; }
 
     .detail-head {
-      display: flex;
-      justify-content: space-between;
-      gap: 15px;
-      align-items: center;
-      margin-bottom: 15px;
+      display:flex;
+      justify-content:space-between;
+      gap:15px;
+      align-items:center;
+      margin-bottom:15px;
     }
 
-    .detail-head h2 {
-      margin: 0;
-    }
-
-    .close-btn {
-      width: auto !important;
-      padding: 8px 12px !important;
-    }
+    .detail-head h2 { margin:0; }
 
     .detail-meta {
-      color: #aeb9c7;
-      margin-bottom: 15px;
-      line-height: 1.6;
+      color:#aeb9c7;
+      margin-bottom:15px;
+      line-height:1.6;
     }
 
-    .detail-table {
-      width: 100%;
-      border-collapse: collapse;
+    .editor-grid {
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:16px;
     }
 
-    .detail-table th,
-    .detail-table td {
-      padding: 11px 8px;
-      border-bottom: 1px solid #2b3b4e;
-      text-align: left;
-      vertical-align: top;
+    .editor-grid .full { grid-column:1 / -1; }
+
+    .editor-grid input {
+      width:100%;
+      box-sizing:border-box;
     }
 
-    @media (max-width: 800px) {
-      .dashboard-wrap {
-        width: calc(100% - 24px);
+    .actions { white-space:nowrap; }
+
+    @media (max-width:800px) {
+      .dashboard-wrap { width:calc(100% - 24px); }
+
+      .dashboard-header, .section-header {
+        align-items:flex-start;
+        flex-direction:column;
       }
 
-      .dashboard-header {
-        align-items: flex-start;
-        flex-direction: column;
-      }
-
-      .stats {
-        grid-template-columns: 1fr 1fr;
-      }
+      .stats { grid-template-columns:1fr 1fr; }
+      .editor-grid { grid-template-columns:1fr; }
+      .editor-grid .full { grid-column:auto; }
     }
   </style>
 </head>
@@ -230,7 +202,7 @@
   </section>
 
   <section class="dashboard-card">
-    <table class="dashboard-table">
+    <table>
       <thead>
         <tr>
           <th>Trade Partner</th>
@@ -240,11 +212,8 @@
           <th>Forecast</th>
         </tr>
       </thead>
-
       <tbody id="rows">
-        <tr>
-          <td colspan="5">Loading dashboard...</td>
-        </tr>
+        <tr><td colspan="5">Loading dashboard...</td></tr>
       </tbody>
     </table>
   </section>
@@ -252,11 +221,73 @@
   <section id="detail" class="detail-card hidden">
     <div class="detail-head">
       <h2 id="detailCompany"></h2>
-      <button id="closeDetail" class="close-btn">Close</button>
+      <button id="closeDetail" class="small-btn">Close</button>
     </div>
-
     <div id="detailMeta" class="detail-meta"></div>
     <div id="detailContent"></div>
+  </section>
+
+  <!-- TRADE PARTNER MANAGEMENT -->
+
+  <section class="dashboard-card management-card">
+    <div class="section-header">
+      <div>
+        <div class="eyebrow">Administration</div>
+        <h2>Manage Trade Partners</h2>
+      </div>
+
+      <button id="addPartnerButton" class="test-btn">
+        + Add Trade Partner
+      </button>
+    </div>
+
+    <table>
+      <thead>
+        <tr>
+          <th>Company</th>
+          <th>Contact</th>
+          <th>Email</th>
+          <th>Status</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody id="partnerManagementRows">
+        <tr><td colspan="5">Loading trade partners...</td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <section id="partnerEditor" class="detail-card hidden">
+    <div class="detail-head">
+      <h2 id="partnerEditorTitle">Add Trade Partner</h2>
+      <button id="cancelPartner" class="small-btn">Cancel</button>
+    </div>
+
+    <input type="hidden" id="partnerId">
+
+    <div class="editor-grid">
+      <div class="field">
+        <label>Company Name *</label>
+        <input id="partnerCompany" type="text"
+               placeholder="e.g. Northstar Plumbing">
+      </div>
+
+      <div class="field">
+        <label>Contact Name</label>
+        <input id="partnerContact" type="text"
+               placeholder="Primary contact">
+      </div>
+
+      <div class="field full">
+        <label>Email Address *</label>
+        <input id="partnerEmail" type="email"
+               placeholder="contact@company.com">
+      </div>
+    </div>
+
+    <div style="margin-top:18px;">
+      <button id="savePartner">SAVE TRADE PARTNER</button>
+    </div>
   </section>
 
 </main>
@@ -269,23 +300,18 @@ let dashboardData = null;
 
 function escapeHtml(value) {
   return String(value ?? '')
-    .replaceAll('&', '&amp;')
-    .replaceAll('<', '&lt;')
-    .replaceAll('>', '&gt;')
-    .replaceAll('"', '&quot;')
-    .replaceAll("'", '&#039;');
+    .replaceAll('&','&amp;')
+    .replaceAll('<','&lt;')
+    .replaceAll('>','&gt;')
+    .replaceAll('"','&quot;')
+    .replaceAll("'",'&#039;');
 }
 
-function showMessage(text, type = '') {
+function showMessage(text, type='') {
   const box = $('message');
-
   box.textContent = text;
   box.className = 'message';
-
-  if (type) {
-    box.classList.add(type);
-  }
-
+  if (type) box.classList.add(type);
   box.classList.remove('hidden');
 }
 
@@ -295,39 +321,25 @@ function clearMessage() {
 
 function formatDateTime(value) {
   if (!value) return '—';
-
   const date = new Date(value);
-
-  if (Number.isNaN(date.getTime())) {
-    return value;
-  }
-
-  return date.toLocaleString('en-US');
+  return Number.isNaN(date.getTime())
+    ? value
+    : date.toLocaleString('en-US');
 }
 
 function getForecast(partner) {
-  if (
-    partner.status !== 'complete' ||
-    !partner.submission
-  ) {
+  if (partner.status !== 'complete' || !partner.submission)
     return '—';
-  }
 
-  if (partner.submission.noEquipment) {
+  if (partner.submission.noEquipment)
     return 'No equipment required';
-  }
 
   const items = partner.submission.items || [];
+  if (!items.length) return 'No equipment required';
 
-  if (!items.length) {
-    return 'No equipment required';
-  }
-
-  return items
-    .map(item =>
-      `${Number(item.quantity) || 0} × ${escapeHtml(item.type)}`
-    )
-    .join('<br>');
+  return items.map(item =>
+    `${Number(item.quantity)||0} × ${escapeHtml(item.type)}`
+  ).join('<br>');
 }
 
 function totalEquipment(partners) {
@@ -336,16 +348,11 @@ function totalEquipment(partners) {
       partner.status !== 'complete' ||
       !partner.submission ||
       partner.submission.noEquipment
-    ) {
-      return total;
-    }
+    ) return total;
 
     return total + (partner.submission.items || [])
-      .reduce(
-        (sum, item) =>
-          sum + (Number(item.quantity) || 0),
-        0
-      );
+      .reduce((sum,item) =>
+        sum + (Number(item.quantity)||0), 0);
   }, 0);
 }
 
@@ -353,64 +360,95 @@ function renderDashboard(data) {
   dashboardData = data;
 
   const partners = data.partners || [];
+  const activePartners = partners.filter(p => p.active !== false);
 
-  const completed = partners.filter(
-    partner => partner.status === 'complete'
+  const completed = activePartners.filter(
+    p => p.status === 'complete'
   ).length;
 
-  const outstanding = partners.length - completed;
+  const outstanding = activePartners.length - completed;
 
-  $('tradePartners').textContent = partners.length;
+  $('tradePartners').textContent = activePartners.length;
   $('complete').textContent = completed;
   $('outstanding').textContent = outstanding;
-  $('equipmentQty').textContent =
-    totalEquipment(partners);
+  $('equipmentQty').textContent = totalEquipment(activePartners);
 
-  $('rows').innerHTML = partners.map(partner => `
+  $('rows').innerHTML = activePartners.map(partner => `
     <tr>
       <td>
-        <button
-          type="button"
-          class="partner-btn"
-          data-partner="${escapeHtml(partner.id)}"
-        >
+        <button type="button"
+                class="partner-btn"
+                data-partner="${escapeHtml(partner.id)}">
           ${escapeHtml(partner.company)}
         </button>
       </td>
-
-      <td class="${
-        partner.status === 'complete'
-          ? 'complete'
-          : 'outstanding'
-      }">
-        ${
-          partner.status === 'complete'
-            ? '✓ Complete'
-            : '• Outstanding'
-        }
+      <td class="${partner.status === 'complete'
+        ? 'complete' : 'outstanding'}">
+        ${partner.status === 'complete'
+          ? '✓ Complete' : '• Outstanding'}
       </td>
-
-      <td>
-        ${formatDateTime(partner.submittedAt)}
-      </td>
-
-      <td>
-        ${Number(partner.reminders) || 0}
-      </td>
-
-      <td>
-        ${getForecast(partner)}
-      </td>
+      <td>${formatDateTime(partner.submittedAt)}</td>
+      <td>${Number(partner.reminders)||0}</td>
+      <td>${getForecast(partner)}</td>
     </tr>
   `).join('');
 
-  document
-    .querySelectorAll('.partner-btn')
-    .forEach(button => {
-      button.addEventListener('click', () => {
-        showPartner(button.dataset.partner);
-      });
-    });
+  document.querySelectorAll('.partner-btn').forEach(button => {
+    button.addEventListener('click', () =>
+      showPartner(button.dataset.partner)
+    );
+  });
+
+  renderPartnerManagement(partners);
+}
+
+function renderPartnerManagement(partners) {
+  const tbody = $('partnerManagementRows');
+
+  tbody.innerHTML = partners.map(partner => {
+    const active = partner.active !== false;
+
+    return `
+      <tr>
+        <td><strong>${escapeHtml(partner.company)}</strong></td>
+        <td>${escapeHtml(partner.contact || '—')}</td>
+        <td>${escapeHtml(partner.email || '—')}</td>
+        <td class="${active ? 'complete' : 'outstanding'}">
+          ${active ? 'Active' : 'Inactive'}
+        </td>
+        <td class="actions">
+          <button class="small-btn edit-partner"
+                  data-id="${escapeHtml(partner.id)}">Edit</button>
+
+          <button class="small-btn toggle-partner"
+                  data-id="${escapeHtml(partner.id)}">
+            ${active ? 'Deactivate' : 'Activate'}
+          </button>
+
+          <button class="small-btn new-token"
+                  data-id="${escapeHtml(partner.id)}">New Link</button>
+        </td>
+      </tr>
+    `;
+  }).join('');
+
+  document.querySelectorAll('.edit-partner').forEach(button =>
+    button.addEventListener('click', () =>
+      editPartner(button.dataset.id)
+    )
+  );
+
+  document.querySelectorAll('.toggle-partner').forEach(button =>
+    button.addEventListener('click', () =>
+      togglePartner(button.dataset.id)
+    )
+  );
+
+  document.querySelectorAll('.new-token').forEach(button =>
+    button.addEventListener('click', () =>
+      generateNewPartnerLink(button.dataset.id)
+    )
+  );
 }
 
 function showPartner(partnerId) {
@@ -422,13 +460,10 @@ function showPartner(partnerId) {
 
   $('detailCompany').textContent = partner.company;
 
-  if (
-    partner.status !== 'complete' ||
-    !partner.submission
-  ) {
+  if (partner.status !== 'complete' || !partner.submission) {
     $('detailMeta').innerHTML =
       `Status: <strong>Outstanding</strong><br>` +
-      `Reminders sent: ${Number(partner.reminders) || 0}`;
+      `Reminders sent: ${Number(partner.reminders)||0}`;
 
     $('detailContent').innerHTML =
       '<p>No look-ahead has been submitted for this cycle.</p>';
@@ -440,25 +475,16 @@ function showPartner(partnerId) {
   const submission = partner.submission;
 
   $('detailMeta').innerHTML =
-    `Submitted by: <strong>${escapeHtml(
-      submission.submittedBy
-    )}</strong><br>` +
+    `Submitted by: <strong>${escapeHtml(submission.submittedBy)}</strong><br>` +
     `Email: ${escapeHtml(submission.email)}<br>` +
     `Submitted: ${formatDateTime(partner.submittedAt)}`;
 
   if (submission.noEquipment) {
     $('detailContent').innerHTML =
       '<p><strong>No equipment required.</strong></p>';
-
-    $('detail').classList.remove('hidden');
-    return;
-  }
-
-  const items = submission.items || [];
-
-  $('detailContent').innerHTML = `
-    <div style="overflow-x:auto">
-      <table class="detail-table">
+  } else {
+    $('detailContent').innerHTML = `
+      <table>
         <thead>
           <tr>
             <th>Equipment</th>
@@ -469,26 +495,174 @@ function showPartner(partnerId) {
             <th>Notes</th>
           </tr>
         </thead>
-
         <tbody>
-          ${items.map(item => `
+          ${(submission.items || []).map(item => `
             <tr>
               <td>${escapeHtml(item.type)}</td>
-              <td>${Number(item.quantity) || 0}</td>
+              <td>${Number(item.quantity)||0}</td>
               <td>${escapeHtml(item.dateNeeded)}</td>
               <td>${escapeHtml(item.duration)}</td>
-              <td>${escapeHtml(
-                item.location || item.area || '—'
-              )}</td>
+              <td>${escapeHtml(item.location || item.area || '—')}</td>
               <td>${escapeHtml(item.notes || '—')}</td>
             </tr>
           `).join('')}
         </tbody>
       </table>
-    </div>
-  `;
+    `;
+  }
 
   $('detail').classList.remove('hidden');
+}
+
+function openPartnerEditor(partner=null) {
+  $('partnerId').value = partner?.id || '';
+  $('partnerCompany').value = partner?.company || '';
+  $('partnerContact').value = partner?.contact || '';
+  $('partnerEmail').value = partner?.email || '';
+
+  $('partnerEditorTitle').textContent =
+    partner ? 'Edit Trade Partner' : 'Add Trade Partner';
+
+  $('partnerEditor').classList.remove('hidden');
+  $('partnerEditor').scrollIntoView({
+    behavior:'smooth',
+    block:'start'
+  });
+}
+
+function closePartnerEditor() {
+  $('partnerEditor').classList.add('hidden');
+  $('partnerId').value = '';
+  $('partnerCompany').value = '';
+  $('partnerContact').value = '';
+  $('partnerEmail').value = '';
+}
+
+function editPartner(id) {
+  const partner = dashboardData?.partners?.find(p => p.id === id);
+  if (!partner) return;
+  openPartnerEditor(partner);
+}
+
+async function savePartner() {
+  const id = $('partnerId').value.trim();
+
+  const payload = {
+    company: $('partnerCompany').value.trim(),
+    contact: $('partnerContact').value.trim(),
+    email: $('partnerEmail').value.trim()
+  };
+
+  if (!payload.company || !payload.email) {
+    showMessage('Company name and email are required.','error');
+    return;
+  }
+
+  try {
+    const response = await fetch(
+      id
+        ? `/api/admin/partners/${encodeURIComponent(id)}`
+        : '/api/admin/partners',
+      {
+        method: id ? 'PUT' : 'POST',
+        headers: {
+          'Content-Type':'application/json',
+          Authorization:'Bearer ' + adminPassword
+        },
+        body:JSON.stringify(payload)
+      }
+    );
+
+    const result = await response.json();
+
+    if (!response.ok || !result.ok) {
+      showMessage(result.error || 'Unable to save trade partner.','error');
+      return;
+    }
+
+    closePartnerEditor();
+    await loadDashboard();
+
+    showMessage(
+      id ? 'Trade partner updated successfully.'
+         : 'Trade partner added successfully.',
+      'success'
+    );
+  } catch {
+    showMessage('Unable to save trade partner.','error');
+  }
+}
+
+async function togglePartner(id) {
+  const partner = dashboardData?.partners?.find(p => p.id === id);
+  if (!partner) return;
+
+  const active = partner.active !== false;
+
+  const response = await fetch(
+    `/api/admin/partners/${encodeURIComponent(id)}`,
+    {
+      method:'PUT',
+      headers:{
+        'Content-Type':'application/json',
+        Authorization:'Bearer ' + adminPassword
+      },
+      body:JSON.stringify({
+        company:partner.company,
+        contact:partner.contact || '',
+        email:partner.email,
+        active:!active
+      })
+    }
+  );
+
+  const result = await response.json();
+
+  if (!response.ok || !result.ok) {
+    showMessage(result.error || 'Unable to update status.','error');
+    return;
+  }
+
+  await loadDashboard();
+
+  showMessage(
+    `${partner.company} is now ${active ? 'inactive' : 'active'}.`,
+    'success'
+  );
+}
+
+async function generateNewPartnerLink(id) {
+  const partner = dashboardData?.partners?.find(p => p.id === id);
+  if (!partner) return;
+
+  if (!confirm(
+    `Generate a new request link for ${partner.company}?\n\n` +
+    `Their previous link will stop working.`
+  )) return;
+
+  const response = await fetch(
+    `/api/admin/partners/${encodeURIComponent(id)}/new-token`,
+    {
+      method:'POST',
+      headers:{
+        Authorization:'Bearer ' + adminPassword
+      }
+    }
+  );
+
+  const result = await response.json();
+
+  if (!response.ok || !result.ok) {
+    showMessage(result.error || 'Unable to generate new link.','error');
+    return;
+  }
+
+  await loadDashboard();
+
+  showMessage(
+    `A new secure request link was generated for ${partner.company}.`,
+    'success'
+  );
 }
 
 async function loadDashboard() {
@@ -496,37 +670,22 @@ async function loadDashboard() {
 
   try {
     const response = await fetch('/api/dashboard', {
-      headers: {
-        Authorization: 'Bearer ' + adminPassword
+      headers:{
+        Authorization:'Bearer ' + adminPassword
       }
     });
-
-    if (response.status === 401) {
-      showMessage(
-        'Incorrect management password.',
-        'error'
-      );
-      return false;
-    }
 
     const data = await response.json();
 
     if (!response.ok) {
-      showMessage(
-        data.error || 'Unable to load dashboard.',
-        'error'
-      );
+      showMessage(data.error || 'Unable to load dashboard.','error');
       return false;
     }
 
     renderDashboard(data);
     return true;
-
-  } catch (error) {
-    showMessage(
-      'Unable to connect to the dashboard.',
-      'error'
-    );
+  } catch {
+    showMessage('Unable to connect to the dashboard.','error');
     return false;
   }
 }
@@ -535,78 +694,55 @@ async function sendTestEmail() {
   clearMessage();
 
   const button = $('testEmail');
-  const originalText = button.textContent;
+  const original = button.textContent;
 
   button.disabled = true;
   button.textContent = 'Sending Test Email...';
 
   try {
-    const response = await fetch(
-      '/api/admin/test-email',
-      {
-        method: 'POST',
-        headers: {
-          Authorization:
-            'Bearer ' + adminPassword
-        }
+    const response = await fetch('/api/admin/test-email',{
+      method:'POST',
+      headers:{
+        Authorization:'Bearer ' + adminPassword
       }
-    );
+    });
 
     const result = await response.json();
 
     if (!response.ok || !result.ok) {
-      showMessage(
-        result.error ||
-        'Unable to send the test email.',
-        'error'
-      );
+      showMessage(result.error || 'Unable to send the test email.','error');
       return;
     }
 
-    if (result.sent) {
-      showMessage(
-        'Test email sent successfully. Check aciraky@fecrent.com.',
-        'success'
-      );
-    } else {
-      showMessage(
-        result.reason ||
-        'The test email was prepared but not sent.',
-        'error'
-      );
-    }
-
-  } catch (error) {
     showMessage(
-      'Unable to contact the email service.',
-      'error'
+      result.sent
+        ? 'Test email sent successfully. Check aciraky@fecrent.com.'
+        : (result.reason || 'The test email was prepared but not sent.'),
+      result.sent ? 'success' : 'error'
     );
+  } catch {
+    showMessage('Unable to contact the email service.','error');
   } finally {
     button.disabled = false;
-    button.textContent = originalText;
+    button.textContent = original;
   }
 }
 
-$('testEmail').addEventListener(
-  'click',
-  sendTestEmail
+$('testEmail').addEventListener('click',sendTestEmail);
+$('closeDetail').addEventListener('click',() =>
+  $('detail').classList.add('hidden')
 );
-
-$('closeDetail').addEventListener(
-  'click',
-  () => $('detail').classList.add('hidden')
+$('addPartnerButton').addEventListener('click',() =>
+  openPartnerEditor()
 );
+$('cancelPartner').addEventListener('click',closePartnerEditor);
+$('savePartner').addEventListener('click',savePartner);
 
 async function start() {
-  adminPassword = prompt(
-    'Management password:'
-  ) || '';
+  adminPassword = prompt('Management password:') || '';
 
   if (!adminPassword) {
-    showMessage(
-      'Management password is required.',
-      'error'
-    );
+    showMessage('Management password is required.','error');
     return;
   }
 
