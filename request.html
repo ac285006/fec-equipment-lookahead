@@ -84,7 +84,7 @@
       margin: 0;
     }
 
-    .equipment-item {
+    . {
       border: 1px solid #293c50;
       border-radius: 12px;
       padding: 16px;
@@ -300,7 +300,7 @@ function formatDate(value) {
 
 function equipmentRow(data = {}) {
   const row = document.createElement('div');
-  row.className = 'equipment-item item';
+  row.className = "equipment-item";
 
   row.innerHTML = `
     <div class="equipment-top">
