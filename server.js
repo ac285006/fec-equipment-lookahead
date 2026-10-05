@@ -532,15 +532,63 @@ app.post('/api/admin/test-email', async (req, res) => {
       `${origin}/request.html?token=` +
       encodeURIComponent(partner.token);
 
-    const payload = {
-      event: 'lookahead-test-email',
-      testMode: true,
-      to: testEmail,
-      company: partner.company,
-      subject:
-        'Action Required - 4-Week Equipment Look-Ahead',
-      requestUrl
-    };
+   const htmlBody = `
+<div style="font-family:Arial,sans-serif;font-size:15px;line-height:1.6;color:#222;max-width:650px;">
+
+  <h2 style="margin:0 0 8px 0;">
+    4-Week Equipment Look-Ahead
+  </h2>
+
+  <p>
+    <strong>Trade Partner:</strong> ${partner.company}
+  </p>
+
+  <p>
+    Your company's upcoming equipment look-ahead is ready for completion.
+  </p>
+
+  <p>
+    Please identify all rental equipment your team anticipates needing during the upcoming 4-week period.
+  </p>
+
+  <p>
+    <strong>
+      A response is required even if you do not anticipate needing additional equipment.
+    </strong>
+  </p>
+
+  <p style="margin:28px 0;">
+    <a
+      href="${requestUrl}"
+      style="background:#1478e8;color:#ffffff;text-decoration:none;padding:14px 24px;border-radius:6px;font-weight:bold;display:inline-block;"
+    >
+      COMPLETE EQUIPMENT LOOK-AHEAD
+    </a>
+  </p>
+
+  <p>
+    Please complete the look-ahead as soon as possible. Automated reminders will continue until your company's submission has been received.
+  </p>
+
+  <p>
+    Providing accurate advance notice helps the project team and United Rentals plan equipment availability and reduce last-minute requests.
+  </p>
+
+  <p>
+    Thank you,<br>
+    <strong>Project Equipment Team</strong>
+  </p>
+
+</div>
+`;
+
+const payload = {
+  event: 'lookahead-test-email',
+  testMode: true,
+  to: testEmail,
+  subject: 'Action Required - 4-Week Equipment Look-Ahead',
+  htmlBody
+};
 
     if (!powerAutomateUrl) {
       return res.json({
