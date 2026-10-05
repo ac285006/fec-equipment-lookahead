@@ -433,6 +433,199 @@ function requireAuth(req, res, role) {
   return true;
 }
 
+
+/* Trade Partner Management */
+
+function makePartnerId(company) {
+  const base = String(company || '')
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-+|-+$/g, '')
+    .slice(0, 40);
+
+  return base || 'trade-partner';
+}
+
+function makeRequestToken() {
+  return crypto.randomBytes(24).toString('hex');
+}
+
+/* Add a trade partner */
+app.post('/api/admin/partners', async (req, res) => {
+  if (!requireAuth(req, res, 'admin')) {
+    return;
+  }
+
+  try {
+    const company = clean(req.body.company, 150);
+    const contact = clean(req.body.contact, 150);
+    const email = clean(req.body.email, 200);
+
+    if (!company || !email) {
+      return res.status(400).json({
+        error: 'Company name and email are required.'
+      });
+    }
+
+    const data = await load();
+
+    const duplicate = data.partners.some(
+      partner =>
+        String(partner.company).toLowerCase() ===
+        company.toLowerCase()
+    );
+
+    if (duplicate) {
+      return res.status(409).json({
+        error: 'That trade partner already exists.'
+      });
+    }
+
+    const activeCycle =
+      data.cycles.find(cycle => cycle.active) ||
+      data.cycles[0];
+
+    let id = makePartnerId(company);
+    let counter = 2;
+
+    while (data.partners.some(partner => partner.id === id)) {
+      id = `${makePartnerId(company)}-${counter++}`;
+    }
+
+    const partner = {
+      id,
+      company,
+      contact,
+      email,
+      active: true,
+      token: makeRequestToken(),
+      cycleId: activeCycle?.id || null,
+      status: 'outstanding',
+      reminders: 0,
+      lastReminder: null,
+      submittedAt: null,
+      submission: null
+    };
+
+    data.partners.push(partner);
+    await save(data);
+
+    return res.status(201).json({
+      ok: true,
+      partner
+    });
+
+  } catch (error) {
+    console.error(error);
+
+    return res.status(500).json({
+      error: 'Unable to add trade partner.'
+    });
+  }
+});
+
+/* Edit a trade partner */
+app.put('/api/admin/partners/:id', async (req, res) => {
+  if (!requireAuth(req, res, 'admin')) {
+    return;
+  }
+
+  try {
+    const data = await load();
+
+    const partner = data.partners.find(
+      item => item.id === req.params.id
+    );
+
+    if (!partner) {
+      return res.status(404).json({
+        error: 'Trade partner not found.'
+      });
+    }
+
+    const company = clean(req.body.company, 150);
+    const contact = clean(req.body.contact, 150);
+    const email = clean(req.body.email, 200);
+
+    if (!company || !email) {
+      return res.status(400).json({
+        error: 'Company name and email are required.'
+      });
+    }
+
+    const duplicate = data.partners.some(
+      item =>
+        item.id !== partner.id &&
+        String(item.company).toLowerCase() ===
+          company.toLowerCase()
+    );
+
+    if (duplicate) {
+      return res.status(409).json({
+        error: 'Another trade partner already uses that company name.'
+      });
+    }
+
+    partner.company = company;
+    partner.contact = contact;
+    partner.email = email;
+
+    if (typeof req.body.active === 'boolean') {
+      partner.active = req.body.active;
+    }
+
+    await save(data);
+
+    return res.json({
+      ok: true,
+      partner
+    });
+
+  } catch (error) {
+    console.error(error);
+
+    return res.status(500).json({
+      error: 'Unable to update trade partner.'
+    });
+  }
+});
+
+/* Generate a new unique request link */
+app.post('/api/admin/partners/:id/new-token', async (req, res) => {
+  if (!requireAuth(req, res, 'admin')) {
+    return;
+  }
+
+  try {
+    const data = await load();
+
+    const partner = data.partners.find(
+      item => item.id === req.params.id
+    );
+
+    if (!partner) {
+      return res.status(404).json({
+        error: 'Trade partner not found.'
+      });
+    }
+
+    partner.token = makeRequestToken();
+
+    await save(data);
+
+    return res.json({
+      ok: true,
+      token: partner.token
+    });
+
+  } catch (error) {
+    console.error(error);
+
+    return res.status(500).json({
+      error: 'Unable to generate a new request link.'
+    });
+  }
+});
 /* Management dashboard */
 app.get('/api/dashboard', async (req, res) => {
   if (!requireAuth(req, res, 'admin')) {
