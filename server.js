@@ -707,13 +707,19 @@ app.post('/api/admin/test-email', async (req, res) => {
   try {
     const data = await load();
 
-    const partner = data.partners.find(
+const requestedPartnerId = clean(req.body?.partnerId, 100);
+
+const partner = requestedPartnerId
+  ? data.partners.find(
+      p => p.id === requestedPartnerId
+    )
+  : data.partners.find(
       p => p.id === 'northstar'
     );
 
     if (!partner) {
       return res.status(404).json({
-        error: 'Test partner not found.'
+error: 'Trade partner not found.'
       });
     }
 
