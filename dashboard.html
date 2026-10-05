@@ -427,8 +427,6 @@ function renderPartnerManagement(partners) {
 
           <button class="small-btn new-token"
                   data-id="${escapeHtml(partner.id)}">New Link</button>
-<button class="small-btn test-partner-email"
-        data-id="${escapeHtml(partner.id)}">Test Email</button>                  
         </td>
       </tr>
     `;
@@ -447,16 +445,11 @@ function renderPartnerManagement(partners) {
   );
 
   document.querySelectorAll('.new-token').forEach(button =>
-  button.addEventListener('click', () =>
-    generateNewPartnerLink(button.dataset.id)
-  )
-);
-
-document.querySelectorAll('.test-partner-email').forEach(button =>
-  button.addEventListener('click', () =>
-    sendPartnerTestEmail(button.dataset.id, button)
-  )
-);
+    button.addEventListener('click', () =>
+      generateNewPartnerLink(button.dataset.id)
+    )
+  );
+}
 
 function showPartner(partnerId) {
   const partner = dashboardData?.partners?.find(
@@ -639,113 +632,37 @@ async function togglePartner(id) {
 }
 
 async function generateNewPartnerLink(id) {
-  const partner = dashboardData?.partners?.find(
-    p => p.id === id
-  );
-
-  if (!partner) {
-    showMessage('Trade partner not found.', 'error');
-    return;
-  }
+  const partner = dashboardData?.partners?.find(p => p.id === id);
+  if (!partner) return;
 
   if (!confirm(
     `Generate a new request link for ${partner.company}?\n\n` +
     `Their previous link will stop working.`
-  )) {
-    return;
-  }
+  )) return;
 
-  try {
-    const response = await fetch(
-      `/api/admin/partners/${encodeURIComponent(id)}/new-token`,
-      {
-        method: 'POST',
-        headers: {
-          Authorization: 'Bearer ' + adminPassword
-        }
+  const response = await fetch(
+    `/api/admin/partners/${encodeURIComponent(id)}/new-token`,
+    {
+      method:'POST',
+      headers:{
+        Authorization:'Bearer ' + adminPassword
       }
-    );
-
-    const result = await response.json();
-
-    if (!response.ok || !result.ok) {
-      showMessage(
-        result.error || 'Unable to generate new link.',
-        'error'
-      );
-      return;
     }
-
-    await loadDashboard();
-
-    showMessage(
-      `A new secure request link was generated for ${partner.company}.`,
-      'success'
-    );
-
-  } catch (error) {
-    showMessage(
-      `Unable to generate a new request link for ${partner.company}.`,
-      'error'
-    );
-  }
-}
-
-
-async function sendPartnerTestEmail(id, button) {
-  const partner = dashboardData?.partners?.find(
-    p => p.id === id
   );
 
-  if (!partner) {
-    showMessage('Trade partner not found.', 'error');
+  const result = await response.json();
+
+  if (!response.ok || !result.ok) {
+    showMessage(result.error || 'Unable to generate new link.','error');
     return;
   }
 
-  const originalText = button.textContent;
+  await loadDashboard();
 
-  button.disabled = true;
-  button.textContent = 'Sending...';
-  clearMessage();
-
-  try {
-    const response = await fetch('/api/admin/test-email', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: 'Bearer ' + adminPassword
-      },
-      body: JSON.stringify({
-        partnerId: id
-      })
-    });
-
-    const result = await response.json();
-
-    if (!response.ok || !result.ok) {
-      showMessage(
-        result.error || 'Unable to send test email.',
-        'error'
-      );
-      return;
-    }
-
-    showMessage(
-      result.sent
-        ? `Test email for ${partner.company} sent successfully to the test inbox.`
-        : (result.reason || 'The test email was prepared but not sent.'),
-      result.sent ? 'success' : 'error'
-    );
-
-  } catch (error) {
-    showMessage(
-      `Unable to send the test email for ${partner.company}.`,
-      'error'
-    );
-  } finally {
-    button.disabled = false;
-    button.textContent = originalText;
-  }
+  showMessage(
+    `A new secure request link was generated for ${partner.company}.`,
+    'success'
+  );
 }
 
 async function loadDashboard() {
