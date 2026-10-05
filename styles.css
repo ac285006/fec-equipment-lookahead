@@ -57,3 +57,142 @@
     grid-row: auto !important;
   }
 }
+/* ===== TRADE PARTNER 4-WEEK FORM FINAL OVERRIDES ===== */
+
+.lookahead-wrap {
+  max-width: 1220px !important;
+  width: calc(100% - 40px) !important;
+  margin: 0 auto !important;
+}
+
+.lookahead-card {
+  width: 100% !important;
+  max-width: none !important;
+}
+
+.lookahead-wrap .two-col {
+  display: grid !important;
+  grid-template-columns: 1fr 1fr !important;
+  gap: 16px !important;
+}
+
+.lookahead-wrap .equipment-item {
+  display: block !important;
+  width: 100% !important;
+  box-sizing: border-box !important;
+  padding: 16px !important;
+}
+
+.lookahead-wrap .equipment-top {
+  display: grid !important;
+  grid-template-columns: 1.7fr .75fr 1.45fr !important;
+  gap: 16px !important;
+  width: 100% !important;
+}
+
+.lookahead-wrap .equipment-middle {
+  display: grid !important;
+  grid-template-columns: .85fr 1.55fr !important;
+  gap: 16px !important;
+  width: 100% !important;
+  margin-top: 12px !important;
+}
+
+.lookahead-wrap .equipment-bottom {
+  display: grid !important;
+  grid-template-columns: minmax(0, 1fr) auto !important;
+  gap: 16px !important;
+  width: 100% !important;
+  margin-top: 12px !important;
+  align-items: end !important;
+}
+
+.lookahead-wrap .field {
+  display: flex !important;
+  flex-direction: column !important;
+  width: 100% !important;
+  min-width: 0 !important;
+}
+
+.lookahead-wrap .field input,
+.lookahead-wrap .field textarea {
+  display: block !important;
+  width: 100% !important;
+  max-width: none !important;
+  min-width: 0 !important;
+  box-sizing: border-box !important;
+}
+
+.lookahead-wrap .notes {
+  width: 100% !important;
+  min-height: 64px !important;
+}
+
+.lookahead-wrap .remove-btn {
+  display: inline-block !important;
+  width: auto !important;
+  min-width: 0 !important;
+  height: auto !important;
+  align-self: end !important;
+  padding: 9px 12px !important;
+  margin: 0 !important;
+  grid-column: auto !important;
+  grid-row: auto !important;
+}
+
+.lookahead-wrap .add-btn {
+  display: inline-block !important;
+  width: auto !important;
+  padding: 11px 18px !important;
+  background: #1478e8 !important;
+  color: #fff !important;
+  border-radius: 8px !important;
+}
+
+.lookahead-wrap .radio-row {
+  display: flex !important;
+  flex-direction: row !important;
+  align-items: center !important;
+  gap: 20px !important;
+}
+
+.lookahead-wrap .confirm-row {
+  display: flex !important;
+  flex-direction: row !important;
+  justify-content: flex-start !important;
+  align-items: center !important;
+  gap: 10px !important;
+}
+
+.lookahead-wrap .confirm-row input {
+  width: auto !important;
+  flex: 0 0 auto !important;
+}
+
+.lookahead-wrap .submit-btn {
+  display: block !important;
+  width: 100% !important;
+  background: #1478e8 !important;
+  color: #fff !important;
+  border: 0 !important;
+  border-radius: 8px !important;
+  padding: 14px !important;
+  font-weight: 800 !important;
+}
+
+@media (max-width: 800px) {
+  .lookahead-wrap {
+    width: calc(100% - 24px) !important;
+  }
+
+  .lookahead-wrap .two-col,
+  .lookahead-wrap .equipment-top,
+  .lookahead-wrap .equipment-middle,
+  .lookahead-wrap .equipment-bottom {
+    grid-template-columns: 1fr !important;
+  }
+
+  .lookahead-wrap .remove-btn {
+    justify-self: start !important;
+  }
+}
