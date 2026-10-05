@@ -447,16 +447,16 @@ function renderPartnerManagement(partners) {
   );
 
   document.querySelectorAll('.new-token').forEach(button =>
-    button.addEventListener('click', () =>
-      generateNewPartnerLink(button.dataset.id)
-    document.querySelectorAll('.test-partner-email').forEach(button =>
+  button.addEventListener('click', () =>
+    generateNewPartnerLink(button.dataset.id)
+  )
+);
+
+document.querySelectorAll('.test-partner-email').forEach(button =>
   button.addEventListener('click', () =>
     sendPartnerTestEmail(button.dataset.id, button)
   )
-);                        
-    )
-  );
-}
+);
 
 function showPartner(partnerId) {
   const partner = dashboardData?.partners?.find(
