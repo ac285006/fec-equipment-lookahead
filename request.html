@@ -323,10 +323,11 @@ function equipmentRow(data = {}) {
 
       <div class="field">
         <label>Date needed <span class="required">*</span></label>
-        <input class="date"
-               type="date"
-               required
-               value="${data.dateNeeded || ''}">
+       <input class="date"
+       type="date"
+       required
+       onclick="this.showPicker && this.showPicker()"
+       value="${data.dateNeeded || ''}">
       </div>
     </div>
 
