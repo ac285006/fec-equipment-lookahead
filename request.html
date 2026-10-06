@@ -410,11 +410,18 @@ document.querySelectorAll('input[name="need"]').forEach(input => {
     const noEquipment =
       document.querySelector('input[name="need"]:checked').value === 'no';
 
-    document.getElementById('equipmentSection')
-      .classList.toggle('hidden', noEquipment);
+    const equipmentSection =
+      document.getElementById('equipmentSection');
+
+    equipmentSection.classList.toggle('hidden', noEquipment);
+
+    equipmentSection
+      .querySelectorAll('input, textarea, select')
+      .forEach(field => {
+        field.disabled = noEquipment;
+      });
   });
 });
-
 document.getElementById('form').onsubmit = async event => {
   event.preventDefault();
 
