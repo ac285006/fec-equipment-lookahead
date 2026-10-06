@@ -427,6 +427,9 @@ function renderPartnerManagement(partners) {
 
           <button class="small-btn new-token"
                   data-id="${escapeHtml(partner.id)}">New Link</button>
+                  
+          <button class="small-btn test-partner-email"
+        data-id="${escapeHtml(partner.id)}">Test Email</button>        
         </td>
       </tr>
     `;
@@ -449,6 +452,12 @@ function renderPartnerManagement(partners) {
       generateNewPartnerLink(button.dataset.id)
     )
   );
+
+  document.querySelectorAll('.test-partner-email').forEach(button =>
+  button.addEventListener('click', () =>
+    sendPartnerTestEmail(button.dataset.id, button)
+  )
+);
 }
 
 function showPartner(partnerId) {
@@ -664,8 +673,64 @@ async function generateNewPartnerLink(id) {
     'success'
   );
 }
+async function sendPartnerTestEmail(id, button) {
+  const partner = dashboardData?.partners?.find(
+    p => p.id === id
+  );
 
-async function loadDashboard() {
+  if (!partner) {
+    showMessage('Trade partner not found.', 'error');
+    return;
+  }
+
+  const originalText = button.textContent;
+
+  button.disabled = true;
+  button.textContent = 'Sending...';
+  clearMessage();
+
+  try {
+    const response = await fetch('/api/admin/test-email', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: 'Bearer ' + adminPassword
+      },
+      body: JSON.stringify({
+        partnerId: id
+      })
+    });
+
+    const result = await response.json();
+
+    if (!response.ok || !result.ok) {
+      showMessage(
+        result.error || 'Unable to send test email.',
+        'error'
+      );
+      return;
+    }
+
+    showMessage(
+      result.sent
+        ? `Test email for ${partner.company} sent successfully to the test inbox.`
+        : (result.reason || 'The test email was prepared but not sent.'),
+      result.sent ? 'success' : 'error'
+    );
+
+  } catch (error) {
+    showMessage(
+      `Unable to send the test email for ${partner.company}.`,
+      'error'
+    );
+  } finally {
+    button.disabled = false;
+    button.textContent = originalText;
+  }
+}
+
+  
+  async function loadDashboard() {
   clearMessage();
 
   try {
