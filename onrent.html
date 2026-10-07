@@ -178,8 +178,20 @@
         <h1>Current On-Rent Equipment</h1>
       </div>
 
-      <div class="onrent-actions">
-        <button class="onrent-btn">Import Vendor Report</button>
+      <div class="onrent-actions"><button
+  class="onrent-btn"
+  id="importVendorButton"
+  type="button"
+>
+  Import Vendor Report
+</button>
+
+<input
+  id="vendorReportFile"
+  type="file"
+  accept=".csv,.xls,.xlsx"
+  hidden
+>
         <button class="onrent-btn primary">Download FEC Report</button>
       </div>
     </div>
@@ -378,7 +390,71 @@
       renderEquipment(filtered);
     });
 
-  loadOnRent();
+  const importVendorButton =
+  document.getElementById('importVendorButton');
+
+const vendorReportFile =
+  document.getElementById('vendorReportFile');
+
+importVendorButton.addEventListener('click', () => {
+  vendorReportFile.click();
+});
+
+vendorReportFile.addEventListener('change', async () => {
+  const file = vendorReportFile.files[0];
+
+  if (!file) return;
+
+  const originalText = importVendorButton.textContent;
+
+  importVendorButton.disabled = true;
+  importVendorButton.textContent = 'Reading Report...';
+
+  try {
+    const formData = new FormData();
+    formData.append('report', file);
+
+    const response = await fetch('/api/onrent/detect', {
+      method: 'POST',
+      body: formData
+    });
+
+    const result = await response.json();
+
+    if (!response.ok || !result.ok) {
+      throw new Error(
+        result.error || 'Unable to read vendor report.'
+      );
+    }
+
+    const headerPreview = result.headers
+      .slice(0, 8)
+      .join(', ');
+
+    alert(
+      `Report recognized\n\n` +
+      `Vendor: ${result.vendor}\n` +
+      `File: ${result.fileName}\n` +
+      `Worksheet: ${result.sheetName}\n` +
+      `Records detected: ${result.rowCount}\n\n` +
+      `First columns:\n${headerPreview}`
+    );
+
+  } catch (error) {
+    console.error(error);
+
+    alert(
+      `Unable to recognize this report.\n\n${error.message}`
+    );
+
+  } finally {
+    importVendorButton.disabled = false;
+    importVendorButton.textContent = originalText;
+    vendorReportFile.value = '';
+  }
+});
+
+loadOnRent();
 </script>
   
 </body>
