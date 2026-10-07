@@ -692,7 +692,92 @@ app.get('/api/dashboard', async (req, res) => {
 
 
 
-/* FEC On-Rent dashboard */
+/* FEC vendor report detector - preview only */
+app.post(
+  '/api/onrent/detect',
+  upload.single('report'),
+  async (req, res) => {
+    try {
+      if (!req.file) {
+        return res.status(400).json({
+          ok: false,
+          error: 'No vendor report was uploaded.'
+        });
+      }
+
+      const workbook = XLSX.read(req.file.buffer, {
+        type: 'buffer',
+        cellDates: true
+      });
+
+      const sheetName = workbook.SheetNames[0];
+
+      if (!sheetName) {
+        return res.status(400).json({
+          ok: false,
+          error: 'The uploaded report does not contain a worksheet.'
+        });
+      }
+
+      const worksheet = workbook.Sheets[sheetName];
+
+      const rows = XLSX.utils.sheet_to_json(worksheet, {
+        defval: '',
+        raw: false
+      });
+
+      const headers = rows.length
+        ? Object.keys(rows[0]).map(value =>
+            String(value).trim()
+          )
+        : [];
+
+      const normalizedHeaders = headers.map(value =>
+        value.toLowerCase()
+      );
+
+      let vendor = 'Unknown';
+
+      const hasEquipmentShareFields =
+        normalizedHeaders.includes('product') &&
+        (
+          normalizedHeaders.includes('rental id') ||
+          normalizedHeaders.includes('sub-renter company')
+        );
+
+      const hasUnitedFields =
+        normalizedHeaders.some(header =>
+          header.includes('cat class')
+        ) &&
+        normalizedHeaders.some(header =>
+          header.includes('contract')
+        );
+
+      if (hasEquipmentShareFields) {
+        vendor = 'EquipmentShare';
+      } else if (hasUnitedFields) {
+        vendor = 'United Rentals';
+      }
+
+      return res.json({
+        ok: true,
+        vendor,
+        fileName: req.file.originalname,
+        sheetName,
+        rowCount: rows.length,
+        headers
+      });
+
+    } catch (error) {
+      console.error(error);
+
+      return res.status(400).json({
+        ok: false,
+        error: 'Unable to read this vendor report.'
+      });
+    }
+  }
+);
 app.get('/api/onrent', async (req, res) => {
   try {
     const equipmentResult = await pool.query(`
