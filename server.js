@@ -1,8 +1,17 @@
 import express from 'express';
 import crypto from 'crypto';
 import { Pool } from 'pg';
+import multer from 'multer';
+import * as XLSX from 'xlsx';
 
 const app = express();
+
+const upload = multer({
+  storage: multer.memoryStorage(),
+  limits: {
+    fileSize: 15 * 1024 * 1024
+  }
+});
 const port = Number(process.env.PORT || 10000);
 
 const adminPassword =
