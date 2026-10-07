@@ -758,86 +758,79 @@ app.post(
       } else if (hasUnitedFields) {
         vendor = 'United Rentals';
       }
-      let normalizedRows = [];}
+          let normalizedRows = [];
 
       if (vendor === 'EquipmentShare') {
-        normalizedRows = rows.map((row, index) => {
-          const tradePartner =
-            String(row['Sub-Renter Company'] || row['Job'] || '').trim();
+        normalizedRows = rows.map((row, index) => ({
+          sourceRow: index + 2,
 
-          const purchaseOrder =
-            String(row['Sub-renter PO'] || row['PO#'] || '').trim();
+          // United master: Acct Code 1 = Trade Partner
+          tradePartner: String(
+            row['Sub-Renter Company'] ||
+            row['Job'] ||
+            ''
+          ).trim(),
 
-          const siteContact =
-            String(
-              row['Sub-renter requester'] ||
-              row['Ordered by'] ||
-              ''
-            ).trim();
+          // United master: Purchase Order = PO
+          purchaseOrder: String(
+            row['Sub-renter PO'] ||
+            row['PO#'] ||
+            ''
+          ).trim(),
 
-          const orderedBy =
-            String(row['Ordered by'] || '').trim();
+          // United master: Ordered By
+          orderedBy: String(
+            row['Ordered by'] || ''
+          ).trim(),
 
-          const product =
-            String(row['Product'] || '').trim();
+          // United master: Acct Code 2 = Site Contact
+          siteContact: String(
+            row['Sub-renter requester'] || ''
+          ).trim(),
 
-          const equipmentClass =
-            String(row['Class'] || '').trim();
+          // United master: Equip #
+          equipmentNumber: String(
+            row['Devices'] || ''
+          ).trim(),
 
-          const make =
-            String(row['Make'] || '').trim();
+          // United master: Equipment Description
+          equipmentDescription: String(
+            row['Product'] || ''
+          ).trim(),
 
-          const model =
-            String(row['Model'] || '').trim();
+          // EquipmentShare export has no confirmed Serial # field
+          serialNumber: '',
 
-          const equipmentDescription = [
-            product,
-            make,
-            model
-          ]
-            .filter(Boolean)
-            .join(' - ');
+          // United master: Cat Class
+          catClass: String(
+            row['Class'] || ''
+          ).trim(),
 
-          return {
-            sourceRow: index + 2,
+          // United master: Qty
+          quantity:
+            Number.parseInt(row['Qty'], 10) || 1,
 
-            tradePartner,
-            purchaseOrder,
-            orderedBy,
-            siteContact,
+          // EquipmentShare export has no confirmed GPS field
+          gps: '',
 
-            equipmentDescription,
-            catClass: equipmentClass,
+          // United master: Contract #
+          contractNumber: String(
+            row['Rental ID'] || ''
+          ).trim(),
 
-            quantity:
-              Number.parseInt(row['Qty'], 10) || 1,
+          // United master: Start
+          startDate: String(
+            row['start date'] || ''
+          ).trim(),
 
-            equipmentNumber:
-              String(row['Devices'] || '').trim(),
+          // United master: Return
+          returnDate: String(
+            row['end date'] || ''
+          ).trim(),
 
-            serialNumber: '',
-
-            contractNumber:
-              String(row['Rental ID'] || '').trim(),
-
-            startDate:
-              String(row['start date'] || '').trim(),
-
-            returnDate:
-              String(row['end date'] || '').trim(),
-
-            locationName:
-              String(row['Location Name'] || '').trim(),
-
-            locationAddress:
-              String(row['Location Address'] || '').trim(),
-
-            status:
-              String(row['Status'] || '').trim(),
-
-            sourceVendor: 'EquipmentShare'
-          };
-        });
+          // Internal only — not part of visible FEC report
+          sourceVendor: 'EquipmentShare'
+        }));
       }
             return res.json({
         ok: true,
