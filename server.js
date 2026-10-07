@@ -681,6 +681,82 @@ app.get('/api/dashboard', async (req, res) => {
   }
 });
 
+
+
+/* FEC On-Rent dashboard */
+app.get('/api/onrent', async (req, res) => {
+  try {
+    const equipmentResult = await pool.query(`
+      SELECT
+        id,
+        trade_partner,
+        purchase_order,
+        site_contact,
+        equipment_number,
+        equipment_description,
+        serial_number,
+        quantity,
+        gps,
+        contract_number,
+        start_date,
+        return_date,
+        last_seen_at
+      FROM onrent_equipment
+      WHERE active = TRUE
+      ORDER BY
+        trade_partner NULLS LAST,
+        equipment_description NULLS LAST,
+        equipment_number NULLS LAST
+    `);
+
+    const importResult = await pool.query(`
+      SELECT imported_at
+      FROM onrent_imports
+      WHERE status = 'complete'
+      ORDER BY imported_at DESC
+      LIMIT 1
+    `);
+
+    const equipment = equipmentResult.rows;
+
+    const equipmentQty = equipment.reduce(
+      (total, item) => total + (Number(item.quantity) || 0),
+      0
+    );
+
+    const tradePartners = new Set(
+      equipment
+        .map(item => item.trade_partner)
+        .filter(Boolean)
+    ).size;
+
+    const equipmentGroups = new Set(
+      equipment
+        .map(item => item.equipment_description)
+        .filter(Boolean)
+    ).size;
+
+    return res.json({
+      ok: true,
+      stats: {
+        equipmentQty,
+        tradePartners,
+        equipmentGroups,
+        lastUpdated:
+          importResult.rows[0]?.imported_at || null
+      },
+      equipment
+    });
+
+  } catch (error) {
+    console.error(error);
+
+    return res.status(500).json({
+      ok: false,
+      error: 'Unable to load on-rent equipment.'
+    });
+  }
+});
 /* United Rentals read-only planning view */
 app.get('/api/vendor', async (req, res) => {
   if (!requireAuth(req, res, 'vendor')) {
