@@ -159,6 +159,42 @@ async function initializeDatabase() {
     console.log('PostgreSQL initialized with test data');
   } else {
     console.log('Existing PostgreSQL data found');
+  
+    await pool.query(`
+    CREATE TABLE IF NOT EXISTS onrent_imports (
+      id BIGSERIAL PRIMARY KEY,
+      vendor TEXT NOT NULL,
+      source_file TEXT,
+      imported_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+      record_count INTEGER NOT NULL DEFAULT 0,
+      status TEXT NOT NULL DEFAULT 'complete'
+    )
+  `);
+
+  await pool.query(`
+    CREATE TABLE IF NOT EXISTS onrent_equipment (
+      id BIGSERIAL PRIMARY KEY,
+      trade_partner TEXT,
+      purchase_order TEXT,
+      site_contact TEXT,
+      equipment_number TEXT,
+      equipment_description TEXT,
+      serial_number TEXT,
+      quantity INTEGER NOT NULL DEFAULT 1,
+      gps TEXT,
+      contract_number TEXT,
+      start_date DATE,
+      return_date DATE,
+      vendor TEXT NOT NULL,
+      vendor_record_id TEXT,
+      source_file TEXT,
+      import_id BIGINT REFERENCES onrent_imports(id),
+      active BOOLEAN NOT NULL DEFAULT TRUE,
+      first_seen_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+      last_seen_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+      UNIQUE (vendor, vendor_record_id)
+    )
+  `);
   }
 }
 
