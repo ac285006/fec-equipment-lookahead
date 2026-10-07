@@ -637,7 +637,7 @@ app.put('/api/admin/partners/:id', async (req, res) => {
 
 /* Generate a new unique request link */
 app.post('/api/admin/partners/:id/new-token', async (req, res) => {
-  if (!requireAuth(req, res, 'admin')) {
+   (!requireAuth(req, res, 'admin')) {
     return;
   }
 
@@ -648,7 +648,7 @@ app.post('/api/admin/partners/:id/new-token', async (req, res) => {
       item => item.id === req.params.id
     );
 
-    if (!partner) {
+     (!partner) {
       return res.status(404).json({
         error: 'Trade partner not found.'
       });
@@ -673,7 +673,7 @@ app.post('/api/admin/partners/:id/new-token', async (req, res) => {
 });
 /* Management dashboard */
 app.get('/api/dashboard', async (req, res) => {
-  if (!requireAuth(req, res, 'admin')) {
+   (!requireAuth(req, res, 'admin')) {
     return;
   }
 
@@ -698,7 +698,7 @@ app.post(
   upload.single('report'),
   async (req, res) => {
     try {
-      if (!req.file) {
+       (!req.file) {
         return res.status(400).json({
           ok: false,
           error: 'No vendor report was uploaded.'
@@ -758,14 +758,96 @@ app.post(
       } else if (hasUnitedFields) {
         vendor = 'United Rentals';
       }
+      let normalizedRows = [];
 
-      return res.json({
+      if (vendor === 'EquipmentShare') {
+        normalizedRows = rows.map((row, index) => {
+          const tradePartner =
+            String(row['Sub-Renter Company'] || row['Job'] || '').trim();
+
+          const purchaseOrder =
+            String(row['Sub-renter PO'] || row['PO#'] || '').trim();
+
+          const siteContact =
+            String(
+              row['Sub-renter requester'] ||
+              row['Ordered by'] ||
+              ''
+            ).trim();
+
+          const orderedBy =
+            String(row['Ordered by'] || '').trim();
+
+          const product =
+            String(row['Product'] || '').trim();
+
+          const equipmentClass =
+            String(row['Class'] || '').trim();
+
+          const make =
+            String(row['Make'] || '').trim();
+
+          const model =
+            String(row['Model'] || '').trim();
+
+          const equipmentDescription = [
+            product,
+            make,
+            model
+          ]
+            .filter(Boolean)
+            .join(' - ');
+
+          return {
+            sourceRow: index + 2,
+
+            tradePartner,
+            purchaseOrder,
+            orderedBy,
+            siteContact,
+
+            equipmentDescription,
+            catClass: equipmentClass,
+
+            quantity:
+              Number.parseInt(row['Qty'], 10) || 1,
+
+            equipmentNumber:
+              String(row['Devices'] || '').trim(),
+
+            serialNumber: '',
+
+            contractNumber:
+              String(row['Rental ID'] || '').trim(),
+
+            startDate:
+              String(row['start date'] || '').trim(),
+
+            returnDate:
+              String(row['end date'] || '').trim(),
+
+            locationName:
+              String(row['Location Name'] || '').trim(),
+
+            locationAddress:
+              String(row['Location Address'] || '').trim(),
+
+            status:
+              String(row['Status'] || '').trim(),
+
+            sourceVendor: 'EquipmentShare'
+          };
+        });
+      }
+            return res.json({
         ok: true,
         vendor,
         fileName: req.file.originalname,
         sheetName,
         rowCount: rows.length,
-        headers
+        headers,
+        normalizedCount: normalizedRows.length,
+        preview: normalizedRows.slice(0, 5)
       });
 
     } catch (error) {
