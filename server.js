@@ -758,7 +758,7 @@ app.post(
       } else if (hasUnitedFields) {
         vendor = 'United Rentals';
       }
-      let normalizedRows = [];
+      let normalizedRows = [];}
 
       if (vendor === 'EquipmentShare') {
         normalizedRows = rows.map((row, index) => {
