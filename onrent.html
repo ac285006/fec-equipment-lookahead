@@ -248,6 +248,138 @@
     </section>
 
   </main>
+<script>
+  let onRentEquipment = [];
 
+  const escapeHtml = value =>
+    String(value ?? '')
+      .replaceAll('&', '&amp;')
+      .replaceAll('<', '&lt;')
+      .replaceAll('>', '&gt;')
+      .replaceAll('"', '&quot;')
+      .replaceAll("'", '&#039;');
+
+  const formatDate = value => {
+    if (!value) return '—';
+
+    const date = new Date(value);
+
+    if (Number.isNaN(date.getTime())) {
+      return escapeHtml(value);
+    }
+
+    return date.toLocaleDateString();
+  };
+
+  function renderEquipment(rows) {
+    const tbody = document.querySelector('.onrent-table tbody');
+
+    if (!rows.length) {
+      tbody.innerHTML = `
+        <tr>
+          <td colspan="10" class="onrent-empty">
+            No on-rent equipment found.
+          </td>
+        </tr>
+      `;
+      return;
+    }
+
+    tbody.innerHTML = rows.map(item => `
+      <tr>
+        <td>${escapeHtml(item.trade_partner || '—')}</td>
+        <td>${escapeHtml(item.equipment_description || '—')}</td>
+        <td>${escapeHtml(item.quantity ?? 1)}</td>
+        <td>${escapeHtml(item.equipment_number || '—')}</td>
+        <td>${escapeHtml(item.serial_number || '—')}</td>
+        <td>${escapeHtml(item.purchase_order || '—')}</td>
+        <td>${escapeHtml(item.site_contact || '—')}</td>
+        <td>${escapeHtml(item.contract_number || '—')}</td>
+        <td>${formatDate(item.start_date)}</td>
+        <td>${formatDate(item.return_date)}</td>
+      </tr>
+    `).join('');
+  }
+
+  function renderStats(stats) {
+    const values = document.querySelectorAll('.onrent-value');
+
+    values[0].textContent =
+      Number(stats.equipmentQty || 0).toLocaleString();
+
+    values[1].textContent =
+      Number(stats.tradePartners || 0).toLocaleString();
+
+    values[2].textContent =
+      Number(stats.equipmentGroups || 0).toLocaleString();
+
+    values[3].textContent = stats.lastUpdated
+      ? new Date(stats.lastUpdated).toLocaleString()
+      : 'Not imported yet';
+  }
+
+  async function loadOnRent() {
+    try {
+      const response = await fetch('/api/onrent');
+      const result = await response.json();
+
+      if (!response.ok || !result.ok) {
+        throw new Error(
+          result.error || 'Unable to load on-rent equipment.'
+        );
+      }
+
+      onRentEquipment = result.equipment || [];
+
+      renderStats(result.stats || {});
+      renderEquipment(onRentEquipment);
+
+    } catch (error) {
+      console.error(error);
+
+      document.querySelector('.onrent-table tbody').innerHTML = `
+        <tr>
+          <td colspan="10" class="onrent-empty">
+            Unable to load on-rent equipment.
+          </td>
+        </tr>
+      `;
+    }
+  }
+
+  document
+    .querySelector('.onrent-search')
+    .addEventListener('input', event => {
+      const search = event.target.value
+        .trim()
+        .toLowerCase();
+
+      if (!search) {
+        renderEquipment(onRentEquipment);
+        return;
+      }
+
+      const filtered = onRentEquipment.filter(item =>
+        [
+          item.trade_partner,
+          item.equipment_description,
+          item.equipment_number,
+          item.serial_number,
+          item.purchase_order,
+          item.site_contact,
+          item.contract_number
+        ]
+          .filter(Boolean)
+          .some(value =>
+            String(value).toLowerCase().includes(search)
+          )
+      );
+
+      renderEquipment(filtered);
+    });
+
+  loadOnRent();
+</script>
+  
 </body>
 </html>
