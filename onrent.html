@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FEC On-Rent Equipment</title>
+
+  <link rel="stylesheet" href="/styles.css">
+
+  <style>
+    .onrent-page {
+      max-width: 1280px;
+      margin: 0 auto;
+      padding: 32px 24px 60px;
+    }
+
+    .onrent-eyebrow {
+      color: #8fa3bd;
+      font-size: 13px;
+      text-transform: uppercase;
+      letter-spacing: .04em;
+      margin-bottom: 6px;
+    }
+
+    .onrent-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      gap: 20px;
+      margin-bottom: 24px;
+    }
+
+    .onrent-header h1 {
+      margin: 0;
+    }
+
+    .onrent-actions {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .onrent-btn {
+      border: 1px solid #34465a;
+      background: #16202c;
+      color: #fff;
+      border-radius: 7px;
+      padding: 11px 16px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .onrent-btn.primary {
+      background: #1683ed;
+      border-color: #1683ed;
+    }
+
+    .onrent-stats {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 12px;
+      margin-bottom: 20px;
+    }
+
+    .onrent-card {
+      background: #131d29;
+      border: 1px solid #263648;
+      border-radius: 12px;
+      padding: 18px;
+    }
+
+    .onrent-label {
+      color: #8fa3bd;
+      font-size: 14px;
+      margin-bottom: 8px;
+    }
+
+    .onrent-value {
+      font-size: 28px;
+      font-weight: 800;
+    }
+
+    .onrent-panel {
+      background: #131d29;
+      border: 1px solid #263648;
+      border-radius: 12px;
+      padding: 18px;
+    }
+
+    .onrent-toolbar {
+      display: flex;
+      gap: 10px;
+      justify-content: space-between;
+      margin-bottom: 16px;
+      flex-wrap: wrap;
+    }
+
+    .onrent-search {
+      flex: 1;
+      min-width: 260px;
+      background: #0b131d;
+      border: 1px solid #34465a;
+      color: #fff;
+      border-radius: 7px;
+      padding: 11px 12px;
+    }
+
+    .onrent-table-wrap {
+      overflow-x: auto;
+    }
+
+    .onrent-table {
+      width: 100%;
+      border-collapse: collapse;
+      min-width: 1000px;
+    }
+
+    .onrent-table th,
+    .onrent-table td {
+      padding: 12px 10px;
+      border-bottom: 1px solid #263648;
+      text-align: left;
+      white-space: nowrap;
+    }
+
+    .onrent-table th {
+      color: #fff;
+      font-size: 13px;
+    }
+
+    .onrent-empty {
+      color: #8fa3bd;
+      padding: 28px 10px !important;
+      text-align: center !important;
+    }
+
+    @media (max-width: 800px) {
+      .onrent-header {
+        align-items: flex-start;
+        flex-direction: column;
+      }
+
+      .onrent-stats {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <header class="brand-header">
+    <img src="/fec-official.svg" alt="FEC">
+  </header>
+
+  <main class="onrent-page">
+
+    <div class="onrent-header">
+      <div>
+        <div class="onrent-eyebrow">Project Equipment Management</div>
+        <h1>Current On-Rent Equipment</h1>
+      </div>
+
+      <div class="onrent-actions">
+        <button class="onrent-btn">Import Vendor Report</button>
+        <button class="onrent-btn primary">Download FEC Report</button>
+      </div>
+    </div>
+
+    <section class="onrent-stats">
+
+      <div class="onrent-card">
+        <div class="onrent-label">Equipment On Rent</div>
+        <div class="onrent-value">—</div>
+      </div>
+
+      <div class="onrent-card">
+        <div class="onrent-label">Trade Partners</div>
+        <div class="onrent-value">—</div>
+      </div>
+
+      <div class="onrent-card">
+        <div class="onrent-label">Equipment Groups</div>
+        <div class="onrent-value">—</div>
+      </div>
+
+      <div class="onrent-card">
+        <div class="onrent-label">Last Updated</div>
+        <div class="onrent-value" style="font-size:18px;">—</div>
+      </div>
+
+    </section>
+
+    <section class="onrent-panel">
+
+      <div class="onrent-toolbar">
+        <input
+          class="onrent-search"
+          type="search"
+          placeholder="Search trade partner, equipment, PO, site contact, asset #..."
+        >
+      </div>
+
+      <div class="onrent-table-wrap">
+        <table class="onrent-table">
+          <thead>
+            <tr>
+              <th>Trade Partner</th>
+              <th>Equipment Description</th>
+              <th>Qty</th>
+              <th>Equip #</th>
+              <th>Serial #</th>
+              <th>PO</th>
+              <th>Site Contact</th>
+              <th>Contract #</th>
+              <th>Start</th>
+              <th>Return</th>
+            </tr>
+          </thead>
+
+          <tbody>
+            <tr>
+              <td colspan="10" class="onrent-empty">
+                No on-rent data has been imported yet.
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+    </section>
+
+  </main>
+
+</body>
+</html>
