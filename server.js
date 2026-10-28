@@ -637,7 +637,7 @@ app.put('/api/admin/partners/:id', async (req, res) => {
 
 /* Generate a new unique request link */
 app.post('/api/admin/partners/:id/new-token', async (req, res) => {
-   (!requireAuth(req, res, 'admin')) {
+  if (!requireAuth(req, res, 'admin')) {
     return;
   }
 
@@ -648,7 +648,7 @@ app.post('/api/admin/partners/:id/new-token', async (req, res) => {
       item => item.id === req.params.id
     );
 
-     (!partner) {
+    if (!partner) {
       return res.status(404).json({
         error: 'Trade partner not found.'
       });
@@ -673,7 +673,7 @@ app.post('/api/admin/partners/:id/new-token', async (req, res) => {
 });
 /* Management dashboard */
 app.get('/api/dashboard', async (req, res) => {
-   (!requireAuth(req, res, 'admin')) {
+  if (!requireAuth(req, res, 'admin')) {
     return;
   }
 
@@ -698,7 +698,7 @@ app.post(
   upload.single('report'),
   async (req, res) => {
     try {
-       (!req.file) {
+      if (!req.file) {
         return res.status(400).json({
           ok: false,
           error: 'No vendor report was uploaded.'
